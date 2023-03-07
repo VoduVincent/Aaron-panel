@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Year {
+  id       Int       @id @default(autoincrement())
+  date     String    @unique
+  surfaces Surface[]
+}
+
+model Surface {
+  id      Int      @id @default(autoincrement())
+  date    Year     @relation(fields: [yearId], references: [id])
+  yearId  Int
+  name    String
+  nations Nation[]
+  City    City[]
+}
+
+model Nation {
+  id               Int      @id @default(autoincrement())
+  position         Surface  @relation(fields: [surfaceId], references: [id])
+  surfaceId        Int
+  name             String?
+  citybuildcounter Int?
+  rareresources    String?
+  treasury         BigInt?
+  totalpop         BigInt?
+  notables         Person[]
+
+  income_cash      BigInt?
+  income_resources BigInt?
+  income_full_gp   BigInt?
+
+  healthcarebudget Float?
+  educationbudget  Float?
+  colonialbudget   Float?
+
+  armybudget BigInt?
+  navybudget BigInt?
+  airbudget  BigInt?
+
+  infrabudget BigInt?
+
+  dead Boolean?
+
+  Cities City[]
+}
+
+model Person {
+  id   Int    @id @default(autoincrement())
+  name String
+  age  Int
+  race String
+
+  governorskill       Int
+  nationalleaderskill Int
+  millskill           Int
+  powerlevel          Int
+
+  nation   Nation? @relation(fields: [nationId], references: [id])
+  nationId Int?
+
+  notes String?
+  City  City[]
+}
+
+model City {
+  id        Int     @id @default(autoincrement())
+  Nation    Nation? @relation(fields: [nationId], references: [id])
+  nationId  Int?
+  positon   Surface @relation(fields: [surfaceId], references: [id])
+  surfaceId Int
+
+  name     String?
+  governor Person?  @relation(fields: [personId], references: [id])
+
+  population         BigInt
+  taxrate            Float
+  prosperityregional Float?
+  prosperitynational Float?
+  roadlevel          Float?
+  terrain            Float?
+  literacy           Float?
+  warfactor_pop      Float?
+  trade              Float?
+  capital            Float?
+  special_mods       Float?
+  healthcare         Float?
+  popmod_tax         Float?
+  popmod_growth      Float?
+  colonial_booster   Float?
+  resources_tax      Float?
+  resources_booster  Float?
+  tax_base_industry  Float?
+  netprosperity_mod  Float?
+  income_bef_res_gov BigInt?
+
+  annual_growth Float?
+  resources     Int?
+
+  notes String?
+
+  personId Int
+}
