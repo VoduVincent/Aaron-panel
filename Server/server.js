@@ -1,6 +1,5 @@
 const http = require('http');
 const fs = require('fs').promises
-
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -10,14 +9,16 @@ const port = 3000;
 
 let index;
 
+
+
 async function loadHTML(){
   index = await fs.readFile("./Server/index.html")
 }
 
 
 async function tick(){
-  const current_year = Math.max(await prisma.Year.findMany())
-  console.log(current_year)
+  const entire_db = await prisma.$queryRawUnsafe`SELECT * FROM YEAR`
+  console.log(entire_db)
 }
 loadHTML()
 
